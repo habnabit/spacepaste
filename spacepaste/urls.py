@@ -12,8 +12,8 @@ from werkzeug.routing import Map, Rule
 
 urlmap = Map([
     # paste interface
-    Rule('/', endpoint='pastes/new_paste'),
-    Rule('/+<language>', endpoint='pastes/new_paste'),
+    Rule('/', endpoint='pastes/new_paste', methods=['GET', 'POST', 'PUT']),
+    Rule('/+<language>', endpoint='pastes/new_paste', methods=['GET', 'POST', 'PUT']),
     Rule('/show/<identifier>/', endpoint='pastes/show_paste'),
     Rule('/raw/<identifier>/', endpoint='pastes/raw_paste'),
     Rule('/compare/', endpoint='pastes/compare_paste'),

@@ -43,13 +43,16 @@ class PasteController(object):
         req = local.request
         getform = req.form.get
 
-        if local.request.method == 'POST':
-            code = getform('code', u'')
-            language = getform('language')
+        if req.method in ('POST', 'PUT'):
+            if req.method == 'PUT':
+                code = req.input_stream.read()
+            else:
+                code = getform('code', u'')
+                language = getform('language')
 
-            parent_id = getform('parent')
-            if parent_id is not None:
-                parent = Paste.get(parent_id)
+                parent_id = getform('parent')
+                if parent_id is not None:
+                    parent = Paste.get(parent_id)
 
             spam = getform('webpage') or antispam.is_spam(code)
             if spam:
@@ -67,7 +70,13 @@ class PasteController(object):
                 paste = Paste(code, language, parent, None, bool(private))
                 db.session.add(paste)
                 db.session.commit()
-                return redirect(paste.url)
+                if req.method == 'PUT':
+                    return Response(paste.url + '\n')
+                else:
+                    return redirect(paste.url)
+            elif req.method == 'PUT':
+                error = error or 'no PUT data'
+                return Response(error + '\n')
 
         else:
             parent_id = req.values.get('reply_to')

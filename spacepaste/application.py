@@ -57,6 +57,7 @@ class SpacePaste(object):
         request.bind_to_context()
 
         urls = urlmap.bind_to_environ(environ)
+        request.urlmap = urls
         try:
             endpoint, args = urls.match(request.path)
             handler = get_controller(endpoint)

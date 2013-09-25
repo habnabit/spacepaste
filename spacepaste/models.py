@@ -14,6 +14,7 @@ from datetime import datetime
 from werkzeug import cached_property
 
 from spacepaste import local
+from spacepaste.urls import urlmap
 from spacepaste.utils import generate_paste_hash
 from spacepaste.lib.highlighting import highlight, preview_highlight, LANGUAGES
 from spacepaste.lib.diff import prepare_udiff
@@ -127,7 +128,9 @@ class Paste(db.Model):
     @property
     def url(self):
         """The URL to the paste."""
-        return '/show/%s/' % self.identifier
+        return local.request.urlmap.build(
+            'pastes/show_paste', {'identifier': self.identifier},
+            force_external=True)
 
     def compare_to(self, other, context_lines=4, template=False):
         """Compare the paste with another paste."""
