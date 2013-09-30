@@ -45,7 +45,8 @@ class PasteController(object):
 
         if req.method in ('POST', 'PUT'):
             if req.method == 'PUT':
-                code = req.input_stream.read()
+                code = req.input_stream.read().decode(
+                    req.charset, req.encoding_errors)
             else:
                 code = getform('code', u'')
                 language = getform('language')
